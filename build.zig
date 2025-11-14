@@ -4,11 +4,18 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
-    const lib = b.addStaticLibrary(.{
-        .name = "ogg",
+    const mod = b.createModule(.{
         .target = target,
         .optimize = optimize,
+        .link_libc = true,
     });
+
+    const lib = b.addLibrary(.{
+        .name = "ogg",
+        .linkage = .static,
+        .root_module = mod,
+    });
+
     lib.addIncludePath(b.path("include"));
     lib.addCSourceFiles(.{
         .files = &.{
